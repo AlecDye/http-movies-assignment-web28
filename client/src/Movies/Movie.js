@@ -23,7 +23,7 @@ function Movie({ addToSavedList }) {
 
   const routeToEdit = e => {
     e.preventDefault();
-    history.pushState(`/update-movie/${movie.id}`);
+    history.push(`/edit-movie/${movie.id}`);
   };
 
   useEffect(() => {
