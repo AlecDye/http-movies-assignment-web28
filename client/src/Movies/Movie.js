@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useRouteMatch } from 'react-router-dom';
-import MovieCard from './MovieCard';
+import React, { useEffect, useState } from "react";
+import { useRouteMatch, useHistory } from "react-router-dom";
+import axios from "axios";
+
+// Components
+import MovieCard from "./MovieCard";
 
 function Movie({ addToSavedList }) {
   const [movie, setMovie] = useState(null);
   const match = useRouteMatch();
+  const history = useHistory();
 
   const fetchMovie = id => {
     axios
@@ -18,6 +21,11 @@ function Movie({ addToSavedList }) {
     addToSavedList(movie);
   };
 
+  const routeToEdit = e => {
+    e.preventDefault();
+    history.pushState(`/update-movie/${movie.id}`);
+  };
+
   useEffect(() => {
     fetchMovie(match.params.id);
   }, [match.params.id]);
@@ -27,11 +35,14 @@ function Movie({ addToSavedList }) {
   }
 
   return (
-    <div className='save-wrapper'>
+    <div className="save-wrapper">
       <MovieCard movie={movie} />
 
-      <div className='save-button' onClick={saveMovie}>
+      <div className="save-button" onClick={saveMovie}>
         Save
+      </div>
+      <div className="edit-button" onClick={routeToEdit}>
+        Edit
       </div>
     </div>
   );
