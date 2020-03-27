@@ -11,6 +11,7 @@ const initialMovie = {
 };
 
 const EditMovie = props => {
+  console.log("EditMovie", props);
   const match = useRouteMatch();
   const history = useHistory();
   const [movie, setMovie] = useState(initialMovie);
@@ -22,32 +23,36 @@ const EditMovie = props => {
       [e.target.name]: e.target.value
     });
   };
-  const handleSubmit = e => {
-    e.preventDefault();
-    axios.put(`http://localhost:5000/movies/${movie.id}`, movie).then(res => {
-      //   console.log(".put", res);
-      const editedMovies = props.movies.map(item => {
-        if (item.id === res.data.id) {
-          return res.data;
-        } else {
-          return item;
-        }
-      });
-      props.setMovie(editedMovies);
-      history.push("/");
-    });
-  };
-
   useEffect(() => {
     const movie = props.movies.find(item => `${item.id}` === match.params.id);
     if (movie) {
       setMovie(movie);
     }
-  }, [props.movie, match]);
+  }, [props.movies, match]);
+  const handleSubmit = e => {
+    e.preventDefault();
+    axios
+      .put(`http://localhost:5000/api/movies/${movie.id}`, movie)
+      .then(res => {
+        console.log(".put", res);
+        // const editedMovies = res.data;
+
+        // props.movies.map(item => {
+        //   if (item.id === res.data.id) {
+        //     return res.data;
+        //   } else {
+        //     return item;
+        //   }
+        // });
+        props.setChange(res);
+        history.push("/");
+      });
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <h2>Edit Movie</h2>
-      <label for="title">Title:</label>
+      <label htmlFor="title">Title:</label>
       <input
         id="title"
         type="text"
@@ -55,7 +60,7 @@ const EditMovie = props => {
         value={movie.title}
         onChange={handleChanges}
       />
-      <label for="director">Director:</label>
+      <label htmlFor="director">Director:</label>
       <input
         id="director"
         type="text"
@@ -63,7 +68,7 @@ const EditMovie = props => {
         value={movie.director}
         onChange={handleChanges}
       />
-      <label for="metascore">Metascore:</label>
+      <label htmlFor="metascore">Metascore:</label>
       <input
         id="metascore"
         type="tel"
@@ -71,7 +76,7 @@ const EditMovie = props => {
         value={movie.metascore}
         onChange={handleChanges}
       />
-      <label for="stars">Stars:</label>
+      <label htmlFor="stars">Stars:</label>
       <textarea
         id="stars"
         type="text"
@@ -79,7 +84,7 @@ const EditMovie = props => {
         value={movie.stars}
         onChange={handleChanges}
       />
-      <button>Save</button>
+      <button type="submit">Update</button>
     </form>
   );
 };
